@@ -21,7 +21,7 @@ Rather than redoing all annotations manually, I developed this optimization tool
 
 ## Visualization
 
-[Insert before/after comparison image here showing the difference between original automated annotations and optimized polygons]
+![Before and After Polygon Optimization](comparison_image.png)
 
 ## Usage
 
