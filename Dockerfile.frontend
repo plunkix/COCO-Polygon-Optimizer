@@ -1,0 +1,40 @@
+FROM python:3.9-slim
+
+# Set working directory
+WORKDIR /app
+
+# Install system dependencies required for OpenCV
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libgl1-mesa-glx \
+    libglib2.0-0 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy requirements file
+COPY requirements.txt .
+
+# Add Streamlit to requirements
+RUN echo "streamlit>=1.12.0" >> requirements.txt
+RUN echo "pillow>=9.0.0" >> requirements.txt
+
+# Install Python dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy application code
+COPY coco_polygon_optimizer.py .
+COPY LICENSE .
+COPY README.md .
+
+# Make the script executable
+RUN chmod +x coco_polygon_optimizer.py
+
+# Copy the Streamlit app
+COPY streamlit_app.py .
+
+# Create directories for input, output and images
+RUN mkdir -p input output images
+
+# Expose Streamlit port
+EXPOSE 8501
+
+# Command to run the Streamlit app
+ENTRYPOINT ["streamlit", "run", "streamlit_app.py", "--server.address=0.0.0.0"]

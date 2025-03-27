@@ -1,0 +1,32 @@
+version: '3'
+
+services:
+  # Core optimizer service
+  optimizer:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./input:/data/input
+      - ./output:/data/output
+      - ./images:/data/images
+    command: --help
+    # This service just builds the image to be used by the frontend
+    profiles:
+      - cli-only
+
+  # Streamlit frontend
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./input:/app/input
+      - ./output:/app/output
+      - ./images:/app/images
+      - ./streamlit_app.py:/app/streamlit_app.py
+    environment:
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped
